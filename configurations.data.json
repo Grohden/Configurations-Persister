@@ -1,0 +1,34 @@
+{
+  "text": [
+    {
+      "keyID": 2,
+      "checked": false,
+      "value": "e6"
+    }
+  ],
+  "select-one": [
+    {
+      "keyID": 3,
+      "value": "A"
+    }
+  ],
+  "checkbox": [
+    {
+      "keyID": 4,
+      "checked": true,
+      "value": "on"
+    }
+  ],
+  "radio": [
+    {
+      "keyID": 5,
+      "checked": false,
+      "value": "on"
+    },
+    {
+      "keyID": 6,
+      "checked": true,
+      "value": "on"
+    }
+  ]
+}
