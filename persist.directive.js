@@ -9,7 +9,7 @@
     };
     
     angular.module('configurations').directive(
-        'persistAll',
+        'grSave',
         function () {
             return {
                 restrict: 'A',

@@ -3,14 +3,14 @@ Angular+NWJS module that saves chosen data to a json and on page reload reapply 
 
 #Usage
 import all js files in the html and
-use the `persist-value` directive with the optional desired save value, for now it only supports one option
+use the `gr-persist` directive with the optional desired save value, you can pass an array with desired options, like the example below.
 ```
 <configurations>
             <div>
             <ul>
                 <li>
                     <label for='input'>Some text</label>
-                    <input ng-model='tst.count' id="input" name='input' persist-value="value">
+                    <input id="input" name='input' data-gr-persist="'value'">
                 </li>
                 <li>
                     <select persist-value="value">
@@ -21,21 +21,21 @@ use the `persist-value` directive with the optional desired save value, for now 
                 </li>
 
                 <li>
-                    <input type='checkbox' id="checkbox" name='checkbox' persist-value="checked">
+                    <input type='checkbox' id="checkbox" name='checkbox' data-gr-persist="'checked'">
                     <label for='checkbox'>Enable</label>
                 </li>
                 <li>
-                    <input type='radio' id="radio" name='radio' persist-value="checked">
+                    <input type='radio' id="radio" name='radio' data-gr-persist="'checked'">
                     <label for='radio'>Enable</label>
-                    <input type='radio' id="anotherradio" name='radio' persist-value="checked">
-                    <label for='outroradio'>Another radio</label>
+                    <input type='radio' id="anotherRadio" name='radio' data-gr-persist="['checked','value']">
+                    <label for='anotherRadio'>Another Radio</label>
                 </li>
             </ul>
-            <button id="save" persist-all>Save</button>
+            <button id="save" data-gr-save>Save</button>
             </div>
-        </configurations>
+</configurations>
 ```
-and use `persist-all` directive, that save the specified key in a JSON.
+and use `gr-save` directive, that save the specified key in a JSON. (it uses the click from jquery, its a problem to solve latter)
 ```
 <button id="save" persist-all>Save</button>
 ```

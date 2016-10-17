@@ -1,5 +1,10 @@
 (function () {
     'use strict';
+    var DEBUG = false;
+    var INFO = true;
+    var ALL = false;
+    var ERROR = true;
+
     /*global angular, $, console, require*/
     angular.module('configurations').controller('configurationsController',
         function ($scope, $http, sharedConfigurations) {
@@ -24,30 +29,37 @@
             };
 
             this.saveConfigurations = function saveConfigurations() {
-                console.log(options);
+                (DEBUG || ALL) && console.debug(options);
                 var fs;
                 try {
                     fs = require('fs'); //NWJS fileSystem is required to save a file.
                 } catch (error) {
-                    console.error('Require is not defined. Run in a NWJS window/app to save configurations');
+                    (ERROR || ALL) && console.error('Require is not defined. Run in a NWJS window/app to save configurations');
                     return;
                 }
-                
-                var x;
+
                 configurations.configs = {};
-                for (x = 0; x < options.length; x++) {
+                for (var x = 0; x < options.length; x++) {
                     var element = options[x];
-                    
-                    if (configurations.configs[element.type] === undefined) {
+
+                    if (!configurations.configs[element.type]) {
                         configurations.configs[element.type] = [];
                     }
-                    
-                    /* TODO:
-                     * there's problems choosing which key is important to save,
-                     * for now i'll get only these keys.
-                     */
+
+                    //TODO: let dev chose the id for view.
                     var attributes = {keyID: element.keyID};
-                    attributes[element.willSave] = element[element.willSave];
+
+                    //If dev passed an array.
+                    if(element.willSave instanceof Array){
+                        for(var y=0; y<element.willSave.length;y++){
+                            attributes[element.willSave[y]] = element[element.willSave[y]]; //FIXME: ugly code, split in variables.
+                        }
+                    } else if(element.willSave == "auto"){
+                        //TODO: implement
+                    } else {
+                        //If dev passed only one option
+                        attributes[element.willSave] = element[element.willSave];
+                    }
 
                     configurations.configs[element.type].push(attributes);
                 }
@@ -58,7 +70,7 @@
 
                 var outputFilename = 'app/configurations/configurations.data.json';
                 fs.writeFile(outputFilename, angular.toJson(sharedConfigurations.configs," "), function (err) {
-                    console.log(err ? "Error saving file:" + err : "File saved to " + outputFilename);
+                    (INFO || ALL) && console.info(err ? "Error saving file:" + err : "File saved to " + outputFilename);
                 });
             };
         

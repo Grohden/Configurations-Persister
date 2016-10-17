@@ -1,14 +1,20 @@
 (function () {
     'use strict';
+    var DEBUG = true;
+    var ALL = false;
+
     /*global angular, console*/
     var link = function (scope, element, attrs, ctrl) {
         var id = scope.$id;
 
-        if (!scope.persistValue){
-            scope.persistValue = "all";
+        (DEBUG || ALL) && console.debug("Object received in scope:",scope.grPersist);
+
+        //If dev does not specify a property the module choose based on element type.
+        if (!scope.grPersist){
+            scope.grPersist = "auto";
         }
 
-        ctrl.registerOption(element.context,scope.persistValue, id); //register element on elements list.
+        ctrl.registerOption(element.context,scope.grPersist, id); //register element on elements list.
         
         /* http callback function*/
         ctrl.getData(function (response) {
@@ -24,39 +30,35 @@
             var typeArr = data[type];
             if (!typeArr) {return; }
 
-            var savedAtributes;
-            var x;
+            var savedAttributes;
+            var position;
             /* Search for element in the array by id(wich was/is defined by $scope.$id)*/
 
-            console.log("Searching for id",id,"in",typeArr);
-            for (x = 0; x < typeArr.length; x++) {
-                if (typeArr[x].keyID === id) {
-                    savedAtributes = typeArr[x];
-                    console.log("found!");
+            (DEBUG || ALL ) && console.debug("Searching for id",id,"in",typeArr);
+            for (position = 0; position < typeArr.length; position++) {
+                if (typeArr[position].keyID === id) {
+                    savedAttributes = typeArr[position];
+                    (DEBUG || ALL) && console.log("found!");
                     break;
                 }
 
             }
 
             /*
-            * Problems if the user create a new view and then refresh and dont save.
-            * Due to the use of $id of the scope for view save/restore the creation
-            * of a new scope with the id of the old scope the views cant 'see' themselves
-            * anymore.
-            *  Solution could be detect this problem, then save and refresh.. but the data will be lost.
+            * FIXME: if you create a new view the old data will be replaced, the module uses scope id to reference the views.
             */
-            if (!savedAtributes) {return; }
+            if (!savedAttributes) {return; }
 
             //part where the data is aplied on view
-            var objKeys = Object.keys(savedAtributes);
+            var objKeys = Object.keys(savedAttributes);
 
             /*
              * For any key() saved it will atribute to the respective element
              * eg: input['value'] = savedAtribute['value'] -> "some value"
              */
-            for (x = 0; x < objKeys.length; x++) {
-                var key = objKeys[x];
-                view[key] = savedAtributes[key];
+            for (position = 0; position < objKeys.length; position++) {
+                var key = objKeys[position];
+                view[key] = savedAttributes[key];
             }
         });
         
@@ -65,12 +67,12 @@
     };
     
     angular.module('configurations').directive(
-        'persistValue',
+        'grPersist',
         function () {
             return {
                 require: '^configurations',
                 scope: {
-                    persistValue:"@"
+                    grPersist:"="
                 },
                 link: link
             };
