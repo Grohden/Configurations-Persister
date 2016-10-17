@@ -5,18 +5,26 @@
         function ($scope, $http, sharedConfigurations) {
             var options = [];
             var configurations = sharedConfigurations;
-                    
-            this.registerOption = function registerOption(option, id) {
+
+
+
+            /**Register the option for latter save
+             * @param {HTMLElement} element - directive context
+             * @param {String} optionToSave - key values to save or all
+             * @param {String} id - view id*/
+            this.registerOption = function registerOption(element,optionToSave, id) {
                 /* 
                  * This function MUST NOT BE CALLED TWICE on directive link()
                  * otherwise it will be pushing again the same option to
                  * options array.
                  */
-                option.context.keyID = id; //not use id, id is a HTML attr.
-                options.push(option);
+                element.keyID = id; //not use id, id is a HTML attr.
+                element.willSave = optionToSave;
+                options.push(element);
             };
 
             this.saveConfigurations = function saveConfigurations() {
+                console.log(options);
                 var fs;
                 try {
                     fs = require('fs'); //NWJS fileSystem is required to save a file.
@@ -25,10 +33,10 @@
                     return;
                 }
                 
-                var x = 0;
+                var x;
                 configurations.configs = {};
                 for (x = 0; x < options.length; x++) {
-                    var element = options[x].context;
+                    var element = options[x];
                     
                     if (configurations.configs[element.type] === undefined) {
                         configurations.configs[element.type] = [];
@@ -38,11 +46,8 @@
                      * there's problems choosing which key is important to save,
                      * for now i'll get only these keys.
                      */
-                    var attributes = {
-                        keyID: element.keyID,
-                        checked: element.checked,
-                        value: element.value
-                    };
+                    var attributes = {keyID: element.keyID};
+                    attributes[element.willSave] = element[element.willSave];
 
                     configurations.configs[element.type].push(attributes);
                 }

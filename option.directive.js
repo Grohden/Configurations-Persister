@@ -3,7 +3,12 @@
     /*global angular, console*/
     var link = function (scope, element, attrs, ctrl) {
         var id = scope.$id;
-        ctrl.registerOption(element, id); //register element on elements list.
+
+        if (!scope.persistValue){
+            scope.persistValue = "all";
+        }
+
+        ctrl.registerOption(element.context,scope.persistValue, id); //register element on elements list.
         
         /* http callback function*/
         ctrl.getData(function (response) {
@@ -17,9 +22,10 @@
             var view = element.context;
             var type = view.type;
             var typeArr = data[type];
-            if (typeArr === undefined) {return; }
+            if (!typeArr) {return; }
+
             var savedAtributes;
-            var x = 0;
+            var x;
             /* Search for element in the array by id(wich was/is defined by $scope.$id)*/
 
             console.log("Searching for id",id,"in",typeArr);
@@ -39,7 +45,7 @@
             * anymore.
             *  Solution could be detect this problem, then save and refresh.. but the data will be lost.
             */
-            if (savedAtributes === undefined || savedAtributes === null) {return; }
+            if (!savedAtributes) {return; }
 
             //part where the data is aplied on view
             var objKeys = Object.keys(savedAtributes);
@@ -63,7 +69,9 @@
         function () {
             return {
                 require: '^configurations',
-                scope: {},
+                scope: {
+                    persistValue:"@"
+                },
                 link: link
             };
         }
