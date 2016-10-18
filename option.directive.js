@@ -1,6 +1,8 @@
 (function () {
     'use strict';
-    var DEBUG = true;
+    var DEBUG = false;
+    var ERROR = false;
+    var INFO = true;
     var ALL = false;
 
     /*global angular, console*/
@@ -21,7 +23,7 @@
             var data = response.data;
 
             if ($.isEmptyObject(data)) {
-                console.info('Seems like the file needed to configure views is empty');
+                (INFO || ALL) && console.info('Seems like the file needed to configure views is empty');
                 return;
             }
             

@@ -1,7 +1,7 @@
 (function () {
     'use strict';
     var DEBUG = false;
-    var INFO = true;
+    var INFO = false;
     var ALL = false;
     var ERROR = true;
 
@@ -69,8 +69,12 @@
                 /* Proper saving file part*/
 
                 var outputFilename = 'app/configurations/configurations.data.json';
-                fs.writeFile(outputFilename, angular.toJson(sharedConfigurations.configs," "), function (err) {
-                    (INFO || ALL) && console.info(err ? "Error saving file:" + err : "File saved to " + outputFilename);
+                fs.writeFile(outputFilename, angular.toJson(sharedConfigurations.configs," "), function (error) {
+                    if(error){
+                        (ERROR || ALL) && console.error("Error saving file:" + error);
+                    } else{
+                        (INFO || ALL) && console.info("File saved to " + outputFilename);
+                    }
                 });
             };
         
