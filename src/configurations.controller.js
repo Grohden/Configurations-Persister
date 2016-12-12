@@ -2,7 +2,7 @@
     'use strict';
     var DEBUG = false;
     var INFO = false;
-    var ALL = false;
+    var ALL = true;
     var ERROR = true;
 
     /*global angular, $, console, require*/
@@ -10,6 +10,7 @@
     function configurationsController($scope, $http, sharedConfigurations) {
         var options = [];
         var configurations = sharedConfigurations;
+        var dataFile = '/data.json';
 
 
 
@@ -68,8 +69,7 @@
 
             /* Proper saving file part*/
 
-            var outputFilename = 'app/configurations/configurations.data.json';
-            fs.writeFile(outputFilename, angular.toJson(sharedConfigurations.configs," "), function (error) {
+            fs.writeFile(process.cwd()+dataFile, angular.toJson(sharedConfigurations.configs," "), function (error) {
                 if(error){
                     (ERROR || ALL) && console.error("Error saving file:" + error);
                 } else{
@@ -79,7 +79,7 @@
         };
 
         this.getData = function getData(fn) {
-            $http.get('app/configurations/configurations.data.json').then(fn);
+            $http.get(process.cwd()+dataFile).then(fn);
         };
 
     }

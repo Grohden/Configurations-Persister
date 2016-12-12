@@ -3,7 +3,7 @@
     var DEBUG = false;
     var ERROR = false;
     var INFO = true;
-    var ALL = false;
+    var ALL = true;
 
     /*global angular, console*/
     var link = function (scope, element, attrs, ctrl) {
@@ -16,18 +16,18 @@
             scope.grPersist = "auto";
         }
 
-        ctrl.registerOption(element.context,scope.grPersist, id); //register element on elements list.
+        ctrl.registerOption(element[0],scope.grPersist, id); //register element on elements list.
         
         /* http callback function*/
         ctrl.getData(function (response) {
             var data = response.data;
 
-            if ($.isEmptyObject(data)) {
+            if (angular.equals({},data)) {
                 (INFO || ALL) && console.info('Seems like the file needed to configure views is empty');
                 return;
             }
             
-            var view = element.context;
+            var view = element[0];
             var type = view.type;
             var typeArr = data[type];
             if (!typeArr) {return; }
