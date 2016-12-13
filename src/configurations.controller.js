@@ -52,7 +52,7 @@
 
                 //If dev passed an array.
                 if(element.willSave instanceof Array){
-                    for(var y=0; y<element.willSave.length;y++){
+                    for(var y=0; y < element.willSave.length;y++){
                         attributes[element.willSave[y]] = element[element.willSave[y]]; //FIXME: ugly code, split in variables.
                     }
                 } else if(element.willSave == "auto"){

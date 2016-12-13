@@ -32,39 +32,16 @@
             var typeArr = data[type];
             if (!typeArr) {return; }
 
-            var savedAttributes;
-            var position;
-            /* Search for element in the array by id(wich was/is defined by $scope.$id)*/
-
-            (DEBUG || ALL ) && console.debug("Searching for id",id,"in",typeArr);
-            for (position = 0; position < typeArr.length; position++) {
-                if (typeArr[position].keyID === id) {
-                    savedAttributes = typeArr[position];
-                    (DEBUG || ALL) && console.log("found!");
-                    break;
-                }
-
-            }
+            var savedAttributes = searchForIdInArray(id,typeArr);
 
             /*
             * FIXME: if you create a new view the old data will be replaced, the module uses scope id to reference the views.
             */
             if (!savedAttributes) {return; }
 
-            //part where the data is aplied on view
-            var objKeys = Object.keys(savedAttributes);
+            putValuesInTheView(savedAttributes,view);
 
-            /*
-             * For any key() saved it will atribute to the respective element
-             * eg: input['value'] = savedAtribute['value'] -> "some value"
-             */
-            for (position = 0; position < objKeys.length; position++) {
-                var key = objKeys[position];
-                view[key] = savedAttributes[key];
-            }
         });
-        
-        
 
     };
     
@@ -80,4 +57,33 @@
             };
         }
     );
+
+    function putValuesInTheView (storedObject,view){
+        //part where the data is applied on view
+        var objKeys = Object.keys(storedObject);
+        var position = 0;
+        do{
+            var key = objKeys[position];
+            view[key] = storedObject[key];
+        } while(objKeys.length > ++position);
+    }
+
+    /**
+     *  Search for element in the array by id(wich was/is defined by $scope.$id)
+     */
+    function searchForIdInArray(id,array){
+        var returnValue;
+        var position;
+
+        (DEBUG || ALL ) && console.debug("Searching for id",id,"in",array);
+        for (position = 0; position < array.length; position++) {
+            if (array[position].keyID === id) {
+                returnValue = array[position];
+                (DEBUG || ALL) && console.log("found!");
+                break;
+            }
+        }
+        return returnValue;
+    }
+
 }());
